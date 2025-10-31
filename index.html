@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PlayBreak — Mini Browser Games</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>🎮 PlayBreak</h1>
+      <p class="tagline">Quick, ad-free mini games — no download. Take a short break!</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="controls">
+      <button id="randomBtn">🎲 Random Game</button>
+      <input id="search" placeholder="Search games..." />
+    </section>
+
+    <section id="gamesGrid" class="grid">
+      <!-- Game cards: change src to other embed URLs or local games you add -->
+      <article class="game-card" data-title="2048">
+        <img src="https://play2048.co/assets/img/2048.png" alt="2048 thumbnail" />
+        <h3>2048</h3>
+        <a class="play" href="https://play2048.co/" target="_blank" rel="noopener">Play</a>
+      </article>
+
+      <article class="game-card" data-title="Snake Classic">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Snake-icon.svg" alt="Snake" />
+        <h3>Snake Classic</h3>
+        <a class="play" href="https://patorjk.com/games/snake/" target="_blank" rel="noopener">Play</a>
+      </article>
+
+      <article class="game-card" data-title="Tetris">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Tetris_logo.svg" alt="Tetris" />
+        <h3>Tetris</h3>
+        <a class="play" href="https://tetris.com/play-tetris" target="_blank" rel="noopener">Play</a>
+      </article>
+
+      <article class="game-card" data-title="Dino Run">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/Chrome_T-Rex.png" alt="Dino" />
+        <h3>Dino Run</h3>
+        <a class="play" href="https://chromedino.com/" target="_blank" rel="noopener">Play</a>
+      </article>
+
+      <article class="game-card" data-title="Memory Match">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Memory-card-game.png" alt="Memory" />
+        <h3>Memory Match</h3>
+        <a class="play" href="https://www.mathsisfun.com/games/memory-match.html" target="_blank" rel="noopener">Play</a>
+      </article>
+
+      <!-- Add more cards here -->
+    </section>
+
+    <section id="playArea" class="play-area hidden">
+      <button id="closePlay">✖ Close</button>
+      <div class="iframe-wrapper">
+        <iframe id="gameFrame" src="" frameborder="0" allowfullscreen sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Made with ❤️ to give people quick breaks. Built with GitHub Pages.</p>
+    </footer>
+  </main>
+
+<script>
+  // Basic interactivity: open in iframe or new tab
+  const grid = document.getElementById('gamesGrid');
+  const playArea = document.getElementById('playArea');
+  const gameFrame = document.getElementById('gameFrame');
+  const closeBtn = document.getElementById('closePlay');
+  const randomBtn = document.getElementById('randomBtn');
+  const search = document.getElementById('search');
+
+  // If user clicks play, try to open in iframe. If site blocks embedding, open in new tab.
+  grid.addEventListener('click', (e) => {
+    const play = e.target.closest('.play');
+    if (!play) return;
+    e.preventDefault();
+    const url = play.href;
+    // Attempt to load in iframe
+    gameFrame.src = url;
+    playArea.classList.remove('hidden');
+  });
+
+  closeBtn.addEventListener('click', () => {
+    gameFrame.src = '';
+    playArea.classList.add('hidden');
+  });
+
+  randomBtn.addEventListener('click', () => {
+    const cards = Array.from(document.querySelectorAll('.game-card .play'));
+    if (!cards.length) return;
+    const choice = cards[Math.floor(Math.random()*cards.length)].href;
+    // open in iframe
+    gameFrame.src = choice;
+    playArea.classList.remove('hidden');
+  });
+
+  // simple search filter
+  search.addEventListener('input', () => {
+    const q = search.value.toLowerCase();
+    document.querySelectorAll('.game-card').forEach(card => {
+      const title = card.dataset.title.toLowerCase();
+      card.style.display = title.includes(q) ? '' : 'none';
+    });
+  });
+
+  // If embedding blocked (X-Frame-Options), user can click the play link which opens new tab — browser console may show error.
+</script>
+</body>
+</html>
